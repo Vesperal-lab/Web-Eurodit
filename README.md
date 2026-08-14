@@ -79,43 +79,49 @@ The collected information is then displayed in the final report.
 ---
 
 ## Request Flow
-
-```text
-                ┌───────────────┐
-                │  Target URL   │
-                └───────┬───────┘
-                        │
-                        ▼
-                ┌───────────────┐
-                │ URL Validation│
-                └───────┬───────┘
-                        │
-                        ▼
-                ┌───────────────┐
-                │ HTTP Request  │
-                └───────┬───────┘
-                        │
-                        ▼
-                ┌───────────────┐
-                │ Status Code   │
-                └───────┬───────┘
-                        │
-                        ▼
-                ┌───────────────┐
-                │ HTTP Headers  │
-                └───────┬───────┘
-                        │
-             ┌──────────┼──────────┐
-             ▼          ▼          ▼
-          Server    Content-Type  X-Powered-By
-             │          │          │
-             └──────────┼──────────┘
-                        ▼
-                ┌───────────────┐
-                │ Final Report  │
-                └───────────────┘
-```
-
+                ┌─────────────────┐
+                │    Target URL   │
+                └────────┬────────┘
+                         │
+                         ▼
+                ┌─────────────────┐
+                │  URL Validation │
+                └────────┬────────┘
+                         │
+                         ▼
+                ┌─────────────────┐
+                │   HTTP Request  │
+                └────────┬────────┘
+                         │
+                         ▼
+                ┌─────────────────┐
+                │  Target Info    │
+                │                 │
+                │ IP              │
+                │ Status          │
+                │ Server          │
+                │ Content-Type    │
+                └────────┬────────┘
+                         │
+                         ▼
+                ┌─────────────────┐
+                │   Options Menu  │
+                └────────┬────────┘
+                         │
+          ┌──────────────┼──────────────┐
+          │              │              │
+          ▼              ▼              ▼
+     ┌─────────┐   ┌────────────┐  ┌────────────┐
+     │ Headers │   │ Directory  │  │ WAF Detect │
+     │         │   │ Enumeration│  │            │
+     └────┬────┘   └─────┬──────┘  └─────┬──────┘
+          │              │               │
+          └──────────────┼───────────────┘
+                         │
+                         ▼
+                ┌─────────────────┐
+                │   Final Report  │
+                └─────────────────┘
 ---
 
 ## Installation
@@ -173,6 +179,8 @@ https://example.com
 * [x] Basic error handling
 * [x] CLI interface
 * [x] Randomized messages
+* [x] Options Menu
+* [x] Improved response analysis 
 
 ## Future
 
@@ -202,24 +210,11 @@ https://example.com
 
 ---
 
-## Project Structure
-
-```text
-Web-Eurodit/
-│
-├── eurodit.py
-└── README.md
-```
-
-The project is intentionally kept simple during the early versions. As the scanner grows, the codebase will gradually be separated into modules.
-
----
-
 ## Version
 
-**Current version: 1.0**
+**Current version: 1.1**
 
-Web Eurodit is currently an early-stage project focused on HTTP reconnaissance and learning.
+Web Eurodit is starting to become more complex...
 
 ---
 
@@ -235,25 +230,37 @@ I'm not responsible for misuse of this software.
 
 ## Changelog
 
+### v1.1
+
+- Added target IP resolution
+- Added HTTP response information
+- Added HTTP headers inspection
+- Added interactive options menu
+- Added placeholders for future directory enumeration
+- Added placeholders for future WAF detection
+- Added placeholders for future security checks
+- Improved error handling
+
+## Changelog
+
 ### v1.0
 
-* Initial release
-* Added target URL validation
-* Added HTTP/HTTPS connection testing
-* Added status code detection
-* Added User-Agent selection
-* Added Server detection
-* Added Content-Type detection
-* Added X-Powered-By detection
-* Added basic HTTP error handling
-* Added timeout handling
-* Added randomized CLI messages
-* Added initial reconnaissance output
+- Initial release
+- Added target URL validation
+- Added HTTP/HTTPS connection testing
+- Added status code detection
+- Added User-Agent selection
+- Added Server detection
+- Added Content-Type detection
+- Added X-Powered-By detection
+- Added basic HTTP error handling
+- Added timeout handling
+- Added randomized CLI messages
+- Added initial reconnaissance output
 
 ---
 
 ## Author
 
 **Pedro Mendes Jangada**
-
-> *"That's all for today's edition."* 
+ 
