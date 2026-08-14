@@ -10,19 +10,6 @@ The name **Eurodit** comes from the idea of an old man reading a newspaper — t
 
 ---
 
-## Changelog
-
-### v1.1
-
-- Added target IP resolution
-- Added HTTP response information
-- Added HTTP headers inspection
-- Added interactive options menu
-- Added placeholders for future directory enumeration
-- Added placeholders for future WAF detection
-- Added placeholders for future security checks
-- Improved error handling
-
 ## Features
 
 * Target URL validation
