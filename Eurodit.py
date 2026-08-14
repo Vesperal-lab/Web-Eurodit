@@ -1,7 +1,10 @@
 import random
+import socket
+from urllib.parse import urlparse
 from urllib.request import Request, urlopen
 from urllib.error import URLError, HTTPError
-import socket
+
+
 MESSAGES = {
     "start": [
         "[*] Good evening, young man.",
@@ -23,7 +26,7 @@ MESSAGES = {
 
     "vuln": [
         "[*] rise and shiny mr root.",
-        "[*] that one had to be useful.",
+        "[*] that one can be useful.",
         "[*] maybe you can use this..."
     ],
 
@@ -38,15 +41,14 @@ MESSAGES = {
         "[*] I'll see you in tomorrow's edition."
     ]
 }
-useragent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"
+DEFAULT_USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"
 headers = {
-    "User-Agent": useragent
+    "User-Agent": DEFAULT_USER_AGENT
 }
-
 def say(category):
     print(random.choice(MESSAGES[category]))
-
 print(r"""
+
                              ___                                                      ___         ___      
                             (   )                                                    (   )  .-.  (   )     
      ___  ___  ___   .--.    | |.-.       .--.    ___  ___   ___ .-.      .--.     .-.| |  ( __)  | |_     
@@ -57,115 +59,144 @@ print(r"""
      | |  | |  | | |  ' _.'  | |  | |   |  ' _.'  | |  | |   | |        | |  | | | |  | |   | |   | | | |  
      | |  ; '  | | |  .'.-.  | '  | |   |  .'.-.  | |  ; '   | |        | '  | | | '  | |   | |   | ' | |  
      ' `-'   `-' ' '  `-' /  ' `-' ;    '  `-' /  ' `-'  /   | |        '  `-' / ' `-'  /   | |   ' `-' ;  
-      '.__.'.__.'   `.__.'    `.__.      `.__.'    '.__.'   (___)        `.__.'   `.__,'   (___)   `.__.                            
-                                                                                                                                                                                                     
-                            version 1.0                                                             
+      '.__.'.__.'   `.__.'    `.__.      `.__.'    '.__.'   (___)        `.__.'   `.__,'   (___)   `.__. 
+        
+                                            version 1.1
     """)
+
 say("start")
+
 def starting():
-    target = input("[+] Usage: Enter the target url\n").strip()
-    url_valid = False
-    while not url_valid:
+    while True:
+        target = input("[+] Usage: Enter the target url\n").strip()
         if target.startswith(("https://", "http://")):
             say("interesting")
-            url_valid = True
-            verifyUrl(target)
-        else:
-            say("error")
-            print("[X] Invalid URL")
-    return target
+            return target
+        say("error")
+        print("[X] Invalid URL")
+
 
 def verifyUrl(target):
-    openurl = Request(target, method="HEAD", headers=headers)
+    request = Request(
+        target,
+        method="HEAD",
+        headers=headers
+    )
+
     try:
-        with urlopen(openurl, timeout=5) as response:
-            print("[*] the server are working...")
+        with urlopen(request, timeout=5) as response:
+            print("[*] The server is working...")
             print(f"[+] Status code: {response.status}")
+            return response
     except HTTPError as error:
         say("error")
-        print(f"[X] HTTP error occurred: {error.code} - {error.reason}")
-        starting()
-
+        print(
+            f"[X] HTTP error occurred: "
+            f"{error.code} - {error.reason}"
+        )
+        return None
     except (URLError, socket.timeout) as error:
         say("error")
-        print(f"[X] the server {target} is down..., Reason {error.reason if hasattr(error, 'reason') else 'timeout'}")
-        starting()
-
+        reason = (
+            error.reason
+            if hasattr(error, "reason")
+            else "timeout"
+        )
+        print(
+            f"[X] The server {target} is unreachable. "
+            f"Reason: {reason}"
+        )
+        return None
 target = starting()
-req = Request(target, headers=headers)
-def decision():
-    choice = input("[?] do you wanna use a User Agent? [y or N]").strip()
-    return choice
-choice = decision()
-UserDecision = False
-while UserDecision == False:
-    if choice == "y":
-        say("choice")
-        useragent = input("[+] Insert the User Agent (or just type 'pass' to continue using a generic one): ")
-        UserDecision = True
-    elif choice == "N":
-        print("[*] alright...")
-        UserDecision = True
-    else:
-        UserDecision = False
-        say("error")
-        print("[X] Wrong Type Error")
-        choice = decision()
+response = verifyUrl(target)
+host = urlparse(target).hostname
 
-match choice:
-    case "y":
-        if useragent == "pass":
-            useragent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"
-        req = Request(target, headers={"User-Agent": useragent})
-        op = urlopen(req)
-        say("interesting")
-        SERVER = op.headers.get("Server")
-        Content = op.headers.get("Content-Type")
-        Xpower = op.headers.get("X-Powered-By")
-    case "N":
-        req = Request(target, method="HEAD")
-        useragent = "none"
-        try:
-            with urlopen(req, timeout=5) as response:
-                print("[*] the server are working...")
-                print(f"[+] Status code: {response.status}")
-                status = response.status
-        except HTTPError as error:
-            say("error")
-            print(f"[X] HTTP error occurred: {error.code} - {error.reason}")
-            if error.code == 403:
-                print("[!] the server need to be accessed with a user agent")
-                decision()
-        op = urlopen(req)
-        say("interesting")
-        SERVER = op.headers.get("Server")
-        Content = op.headers.get("Content-Type")
-        Xpower = op.headers.get("X-Powered-By")
+def resolveIp(host):
+    try:
+        return socket.gethostbyname(host)
+    except socket.gaierror:
+        return "Unable to resolve"
 
+if response is None:
+    print("[X] Eurodit could not continue.")
+    exit()
+STATUS = response.status
+REASON_STATUS = f"{response.status}:{response.reason}"
+SERVER = response.headers.get("Server")
+CONTENT_TYPE = response.headers.get("Content-Type")
+X_POWERED_BY = response.headers.get("X-Powered-By")
+IP = resolveIp(host)
+CONTENT_LENGTH = response.headers.get("Content-Length")
+LOCATION = response.headers.get("Location")
+CACHE_CONTROL = response.headers.get("Cache-Control")
+COOKIES = response.headers.get("Set-Cookie")
 print(fr"""
-
-    ▄       ▌ ▘      ▖ ▖       
-    ▙▘▛▘█▌▀▌▙▘▌▛▌▛▌  ▛▖▌█▌▌▌▌▛▘
-    ▙▘▌ ▙▖█▌▛▖▌▌▌▙▌  ▌▝▌▙▖▚▚▘▄▌  
-             ▄▌            
-    
-    TARGET: {target}            USER AGENT: {useragent}
-    SERVER: {SERVER}
-    CONTENT TYPE: {Content} 
-    X-POWERED BY: {Xpower}
-    
+    ▖▖     ▌▜ ▘       
+    ▙▌█▌▀▌▛▌▐ ▌▛▌█▌  ▖
+    ▌▌▙▖█▌▙▌▐▖▌▌▌▙▖  ▖  
+                                        
+    TARGET: {target}                    
+    USER AGENT: {DEFAULT_USER_AGENT}    
+    STATUS: {REASON_STATUS}             
+    SERVER: {SERVER}                    
+    CONTENT TYPE: {CONTENT_TYPE}        
+    IP: {IP} 
+    X-POWERED BY: {X_POWERED_BY}
+    COOKIES: {COOKIES}
+    CACHE CONTROL: {CACHE_CONTROL}
+    LOCATION: {LOCATION}
+    CONTENT LENGTH: {CONTENT_LENGTH}
 """)
+input("PRESS ENTER FOR OPTIONS...")
+
+def options():
+    while True:
+        opt = input(f"""
+    ┏┓   •        
+    ┃┃┏┓╋┓┏┓┏┓┏  •
+    ┗┛┣┛┗┗┗┛┛┗┛  •
+      ┛           
+
+    [1] HTTP Headers
+    [2] Directory Enumeration (coming soon...)
+    [3] WAF Detection (coming soon...)
+    [4] Security Checks (coming soon...)
+    [5] Exit
+
+    [+] Select an option: """)
+
+        match opt:
+            case "1":
+                print(f"""
+                [HTTP HEADERS]
+
+                Server: {SERVER}
+                Content-Type: {CONTENT_TYPE}
+                Content-Length: {CONTENT_LENGTH}
+                X-Powered-By: {X_POWERED_BY}
+                Cache-Control: {CACHE_CONTROL}
+                Location: {LOCATION}
+                Set-Cookie: {COOKIES}
+                """)
+                input("PRESS ENTER FOR CONTINUE...")
+
+            case "2":
+                print("[*] Directory Enumeration coming soon...")
+                input("PRESS ENTER FOR CONTINUE...")
+
+            case "3":
+                print("[*] WAF Detection coming soon...")
+                input("PRESS ENTER FOR CONTINUE...")
+            case "4":
+                print("[*] Security Checks coming soon...")
+                input("PRESS ENTER FOR CONTINUE...")
+            case "5":
+                print("[*] Exiting Eurodit...")
+                break
+
+            case _:
+                say("error")
+                print("[X] Invalid number")
 
 
-
-
-
-
-
-
-
-
-
-
-
-
+options()
