@@ -48,7 +48,26 @@ The name **Eurodit** comes from the idea of an old man reading a newspaper — t
 Web Eurodit starts by asking the user for a target URL.
 
 ```text
+> python Eurodit.py
+
+
+                             ___                                                      ___         ___      
+                            (   )                                                    (   )  .-.  (   )     
+     ___  ___  ___   .--.    | |.-.       .--.    ___  ___   ___ .-.      .--.     .-.| |  ( __)  | |_     
+    (   )(   )(   ) /    \   | /   \     /    \  (   )(   ) (   )   \    /    \   /   \ |  (''") (   __)   
+     | |  | |  | | |  .-. ;  |  .-. |   |  .-. ;  | |  | |   | ' .-. ;  |  .-. ; |  .-. |   | |   | |      
+     | |  | |  | | |  | | |  | |  | |   |  | | |  | |  | |   |  / (___) | |  | | | |  | |   | |   | | ___  
+     | |  | |  | | |  |/  |  | |  | |   |  |/  |  | |  | |   | |        | |  | | | |  | |   | |   | |(   ) 
+     | |  | |  | | |  ' _.'  | |  | |   |  ' _.'  | |  | |   | |        | |  | | | |  | |   | |   | | | |  
+     | |  ; '  | | |  .'.-.  | '  | |   |  .'.-.  | |  ; '   | |        | '  | | | '  | |   | |   | ' | |  
+     ' `-'   `-' ' '  `-' /  ' `-' ;    '  `-' /  ' `-'  /   | |        '  `-' / ' `-'  /   | |   ' `-' ;  
+      '.__.'.__.'   `.__.'    `.__.      `.__.'    '.__.'   (___)        `.__.'   `.__,'   (___)   `.__. 
+        
+                                            version 1.2
+    
+[*] Let's see what today's newspaper says...
 [+] Usage: Enter the target url
+
 ```
 
 The URL is then validated to make sure it uses either `http://` or `https://`.
@@ -56,13 +75,32 @@ The URL is then validated to make sure it uses either `http://` or `https://`.
 After validation, Eurodit sends the request using a generic User-Agent to improve compatibility with servers that may reject requests from unknown or uncommon clients.
 
 ```text
-[*] the server are working...
+https://example.com/
+[*] Interesting...
+[*] The server is working...
 [+] Status code: 200
+
+    ▖▖     ▌▜ ▘       
+    ▙▌█▌▀▌▛▌▐ ▌▛▌█▌  ▖
+    ▌▌▙▖█▌▙▌▐▖▌▌▌▙▖  ▖  
+                                        
+    TARGET: https://example.com/                    
+    USER AGENT: Mozilla/5.0 (Windows NT 10.0; Win64; x64)    
+    STATUS: 200:OK             
+    SERVER: cloudflare                    
+    CONTENT TYPE: text/html        
+    IP: 104.20.23.154 
+    X-POWERED BY: None
+    COOKIES: None
+    CACHE CONTROL: None
+    LOCATION: None
+    CONTENT LENGTH: None
 ```
 
 ## Removed
 
-* User Agent Choose
+* User Agent Choose (just use a generic one)
+____________________________________________
 
 Eurodit then analyzes the HTTP response and extracts information from the returned headers.
 
@@ -141,41 +179,43 @@ The wordlists are included in the repository and are automatically loaded by Eur
 
 ## Example Output
 
-Example of a basic reconnaissance scan:
+Example of the Options menu:
 
 ```text
-[+] Usage: Enter the target url
-https://example.com
+PRESS ENTER FOR OPTIONS...
 
-[*] the server are working...
-[+] Status code: 200
+    ┏┓   •        
+    ┃┃┏┓╋┓┏┓┏┓┏  •
+    ┗┛┣┛┗┗┗┛┛┗┛  •
+      ┛           
 
-SERVER: nginx
-CONTENT TYPE: text/html
-X-POWERED BY: PHP
+    [1] HTTP Headers
+    [2] Directory Enumeration
+    [3] WAF Detection (coming soon...)
+    [4] Security Checks (coming soon...)
+    [5] Exit
 
-[+] Target IP: 93.184.216.34
-
-[1] Headers
-[2] Directory Enumeration
-[3] Exit
+    [+] Select an option: 
 ```
 
 Example of directory enumeration:
 
 ```text
-[*] Starting directory enumeration...
 
-[+] Testing: /admin
-[+] Testing: /login
-[+] Testing: /robots.txt
 
-[+] Interesting finding: /robots.txt
-[+] Found results: 1
-[*] Paths tested: 3
+┳┓•              ┏┓              •    
+┃┃┓┏┓┏┓┏╋┏┓┏┓┓┏  ┣ ┏┓┓┏┏┳┓┏┓┏┓┏┓╋┓┏┓┏┓
+┻┛┗┛ ┗ ┗┗┗┛┛ ┗┫  ┗┛┛┗┗┻┛┗┗┗ ┛ ┗┻┗┗┗┛┛┗
+              ┛                       
+OPTIONS: 
+F = "Fast" For a fast search (using a smaller wordlist (recommended))
+D = "Deep" For a deep search (using a bigger wordlist)
+S = "Show All" For show all response url's (including 404)              
+              
+target: https://example.com/
+
+
 ```
-
-> Example output may vary depending on the target server and HTTP response.
 
 ---
 
