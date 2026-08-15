@@ -23,6 +23,23 @@ The name **Eurodit** comes from the idea of an old man reading a newspaper — t
 * Connection timeout handling
 * Randomized newspaper-style messages
 * Custom CLI interface
+* Target IP resolution
+* HTTP response information
+* HTTP headers inspection
+* Interactive options menu
+* Directory enumeration
+* Fast directory enumeration
+* Deep directory enumeration
+* Fast and Deep wordlists
+* Show All option
+* Fast + Show All option
+* Deep + Show All option
+* Path testing counter
+* Found results counter
+* Scan interruption with Ctrl+C
+* Relative wordlist path handling
+* Dynamic URL testing display
+* Randomized messages for interesting findings
 
 ---
 
@@ -36,20 +53,16 @@ Web Eurodit starts by asking the user for a target URL.
 
 The URL is then validated to make sure it uses either `http://` or `https://`.
 
-After validation, Eurodit sends an HTTP request to the target server and checks whether the server is reachable with a generic User-Agent to pass by the sites that don't accept connection with others terminals.
+After validation, Eurodit sends the request using a generic User-Agent to improve compatibility with servers that may reject requests from unknown or uncommon clients.
 
 ```text
 [*] the server are working...
 [+] Status code: 200
 ```
 
-The user can then choose whether to use a custom **User-Agent**.
+## Removed
 
-```text
-[?] do you wanna use a User Agent? [y or N]
-```
-
-If a custom User-Agent is selected, the user can provide their own value or continue with the default one.
+* User Agent Choose
 
 Eurodit then analyzes the HTTP response and extracts information from the returned headers.
 
@@ -66,49 +79,110 @@ The collected information is then displayed in the final report.
 ---
 
 ## Request Flow
-                ┌─────────────────┐
-                │    Target URL   │
-                └────────┬────────┘
-                         │
-                         ▼
-                ┌─────────────────┐
-                │  URL Validation │
-                └────────┬────────┘
-                         │
-                         ▼
-                ┌─────────────────┐
-                │   HTTP Request  │
-                └────────┬────────┘
-                         │
-                         ▼
-                ┌─────────────────┐
-                │  Target Info    │
-                │                 │
-                │ IP              │
-                │ Status          │
-                │ Server          │
-                │ Content-Type    │
-                └────────┬────────┘
-                         │
-                         ▼
-                ┌─────────────────┐
-                │   Options Menu  │
-                └────────┬────────┘
-                         │
-          ┌──────────────┼──────────────┐
-          │              │              │
-          ▼              ▼              ▼
-     ┌─────────┐   ┌────────────┐  ┌────────────┐
-     │ Headers │   │ Directory  │  │ WAF Detect │
-     │         │   │ Enumeration│  │            │
-     └────┬────┘   └─────┬──────┘  └─────┬──────┘
-          │              │               │
-          └──────────────┼───────────────┘
-                         │
-                         ▼
-                ┌─────────────────┐
-                │   Final Report  │
-                └─────────────────┘
+
+```
+            ┌─────────────────┐
+            │    Target URL   │
+            └────────┬────────┘
+                     │
+                     ▼
+            ┌─────────────────┐
+            │  URL Validation │
+            └────────┬────────┘
+                     │
+                     ▼
+            ┌─────────────────┐
+            │   HTTP Request  │
+            └────────┬────────┘
+                     │
+                     ▼
+            ┌─────────────────┐
+            │  Target Info    │
+            │                 │
+            │ IP              │
+            │ Status          │
+            │ Server          │
+            │ Content-Type    │
+            └────────┬────────┘
+                     │
+                     ▼
+            ┌─────────────────┐
+            │   Options Menu  │
+            └────────┬────────┘
+                     │
+      ┌──────────────┼──────────────┐
+      │              │              │
+      ▼              ▼              ▼
+ ┌─────────┐   ┌────────────┐  ┌────────────┐
+ │ Headers │   │ Directory  │  │ WAF Detect │
+ │         │   │ Enumeration│  │(planned)   │
+ └────┬────┘   └─────┬──────┘  └─────┬──────┘
+      │              │               │
+      └──────────────┼───────────────┘
+                     │
+                     ▼
+            ┌─────────────────┐
+            │   Final Report  │
+            └─────────────────┘
+```
+
+---
+
+## Directory Enumeration
+
+Eurodit includes two wordlists:
+
+* `Euromini.txt` — Fast enumeration
+* `Eurolib.txt` — Deep enumeration
+
+The wordlists are included in the repository and are automatically loaded by Eurodit.
+
+---
+
+## Example Output
+
+Example of a basic reconnaissance scan:
+
+```text
+[+] Usage: Enter the target url
+https://example.com
+
+[*] the server are working...
+[+] Status code: 200
+
+SERVER: nginx
+CONTENT TYPE: text/html
+X-POWERED BY: PHP
+
+[+] Target IP: 93.184.216.34
+
+[1] Headers
+[2] Directory Enumeration
+[3] Exit
+```
+
+Example of directory enumeration:
+
+```text
+[*] Starting directory enumeration...
+
+[+] Testing: /admin
+[+] Testing: /login
+[+] Testing: /robots.txt
+
+[+] Interesting finding: /robots.txt
+[+] Found results: 1
+[*] Paths tested: 3
+```
+
+> Example output may vary depending on the target server and HTTP response.
+
+---
+
+## Screenshots
+
+Screenshots of Web Eurodit will be added as the interface continues to evolve.
+
 ---
 
 ## Installation
@@ -167,41 +241,61 @@ https://example.com
 * [x] CLI interface
 * [x] Randomized messages
 * [x] Options Menu
-* [x] Improved response analysis 
+* [x] Improved response analysis
+
+### v1.1 — Reconnaissance Improvements
+
+* [x] Target IP resolution
+* [x] HTTP response information
+* [x] HTTP headers inspection
+* [x] Interactive options menu
+* [x] Improved error handling
+* [x] Placeholders for directory enumeration
+* [x] Placeholders for WAF detection
+* [x] Placeholders for security checks
+
+### v1.2 — Directory Enumeration
+
+* [x] Directory enumeration
+* [x] Fast enumeration
+* [x] Deep enumeration
+* [x] `Euromini.txt` wordlist
+* [x] `Eurolib.txt` wordlist
+* [x] Show All option
+* [x] Fast + Show All option
+* [x] Deep + Show All option
+* [x] Path testing counter
+* [x] Found results counter
+* [x] Scan interruption with `Ctrl+C`
+* [x] Relative wordlist path handling
+* [x] Dynamic URL testing display
+* [x] Randomized messages for interesting findings
+* [x] `robots.txt` detection
 
 ## Future
 
 * [ ] Full HTTP header enumeration
+* [ ] Customize User Agent
 * [ ] Security header detection
 * [ ] Redirect detection
 * [ ] Improved HTTP request handling
-
-- [ ] Technology detection
-- [ ] `robots.txt` detection
-- [ ] `sitemap.xml` detection
-- [ ] Basic endpoint discovery
-- [ ] More detailed server information
-
-* [ ] Improved response analysis 
+* [ ] Technology detection
+* [ ] `sitemap.xml` detection
+* [ ] Basic endpoint discovery
+* [ ] More detailed server information
 * [ ] Better timeout handling
 * [ ] Configurable request options
 * [ ] Improved CLI output
 * [ ] Verbose mode
-
-- [ ] Directory enumeration
-- [ ] Web crawler
-- [ ] WAF detection
-- [ ] Vulnerability checks
-- [ ] JSON output
-- [ ] Report generation
-
----
+* [ ] Web crawler
+* [ ] WAF detection
+* [ ] Vulnerability checks
+* [ ] JSON output
+* [ ] Report generation
 
 ## Version
 
-**Current version: 1.1**
-
-Web Eurodit is starting to become more complex...
+**Current version: 1.2**
 
 ---
 
@@ -217,37 +311,53 @@ I'm not responsible for misuse of this software.
 
 ## Changelog
 
+### v1.2
+
+* Added directory enumeration
+* Added `Euromini.txt` wordlist for Fast enumeration
+* Added `Eurolib.txt` wordlist for Deep enumeration
+* Added Fast enumeration option
+* Added Deep enumeration option
+* Added Show All option
+* Added Fast + Show All option
+* Added Deep + Show All option
+* Added path testing counter
+* Added found results counter
+* Added scan interruption with `Ctrl+C`
+* Added relative wordlist path handling
+* Added dynamic URL testing display
+* Added randomized messages for interesting findings
+* Added `robots.txt` detection
+
 ### v1.1
 
-- Added target IP resolution
-- Added HTTP response information
-- Added HTTP headers inspection
-- Added interactive options menu
-- Added placeholders for future directory enumeration
-- Added placeholders for future WAF detection
-- Added placeholders for future security checks
-- Improved error handling
-
-## Changelog
+* Added target IP resolution
+* Added HTTP response information
+* Added HTTP headers inspection
+* Added interactive options menu
+* Added placeholders for future directory enumeration
+* Added placeholders for future WAF detection
+* Added placeholders for future security checks
+* Improved error handling
 
 ### v1.0
 
-- Initial release
-- Added target URL validation
-- Added HTTP/HTTPS connection testing
-- Added status code detection
-- Added User-Agent selection
-- Added Server detection
-- Added Content-Type detection
-- Added X-Powered-By detection
-- Added basic HTTP error handling
-- Added timeout handling
-- Added randomized CLI messages
-- Added initial reconnaissance output
+* Initial release
+* Added target URL validation
+* Added HTTP/HTTPS connection testing
+* Added status code detection
+* Added User-Agent selection
+* Added Server detection
+* Added Content-Type detection
+* Added X-Powered-By detection
+* Added basic HTTP error handling
+* Added timeout handling
+* Added randomized CLI messages
+* Added initial reconnaissance output
 
 ---
 
 ## Author
 
 **Pedro Mendes Jangada**
- 
+
